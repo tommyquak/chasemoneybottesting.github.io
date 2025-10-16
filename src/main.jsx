@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { initializeApp } from 'firebase/app';
+import ReactDOM from 'react-dom/client';
+import { initializeApp, getAnalytics } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, onSnapshot, collection, query, where, addDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { getFirestore, doc, onSnapshot, collection, query, where, addDoc, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
 import {
   Wallet,
   Users,
@@ -13,9 +14,18 @@ import {
   Loader2
 } from 'lucide-react';
 
-// --- Global Firebase Variables (Provided by Canvas Environment) ---
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+// --- Global Firebase Variables ---
+const firebaseConfig = {
+  apiKey: "AIzaSyBaRGydRzYv-fUFyccrRMxhJUOovIWhgW0",
+  authDomain: "chasemoneybot.firebaseapp.com",
+  projectId: "chasemoneybot",
+  storageBucket: "chasemoneybot.firebasestorage.app",
+  messagingSenderId: "1050187592233",
+  appId: "1:1050187592233:web:d6865b9efa8ddc80eba238",
+  measurementId: "G-VZG5DVW9W3"
+};
+const appId = firebaseConfig.appId;
+const app = initializeApp(firebaseConfig);
 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
 // Helper to generate unique IDs
@@ -44,6 +54,7 @@ const App = () => {
       }
 
       const app = initializeApp(firebaseConfig);
+      getAnalytics(app); // Initialize Analytics
       const firestoreDb = getFirestore(app);
       const firebaseAuth = getAuth(app);
 
@@ -175,12 +186,7 @@ const App = () => {
 
     try {
       const groupDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'debtGroups', groupId);
-      await deleteDoc(groupDocRef); // Note: I must use deleteDoc, but it's not imported. Let's add it.
-
-      // Adding deleteDoc to imports:
-      // import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, addDoc, getDocs, ... } from 'firebase/firestore';
-
-      // Re-check imports at the top and ensure deleteDoc is included. (It is!)
+      await deleteDoc(groupDocRef);
 
     } catch (e) {
       console.error("Error deleting group:", e);
@@ -201,7 +207,6 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8 font-sans">
-      <script src="https://cdn.tailwindcss.com"></script>
       <div className="max-w-4xl mx-auto">
         <header className="mb-8 text-center bg-indigo-600 text-white p-6 rounded-xl shadow-lg">
           <h1 className="text-3xl sm:text-4xl font-extrabold flex items-center justify-center">
@@ -351,4 +356,10 @@ const App = () => {
   );
 };
 
-export default App;
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+root.render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
+);

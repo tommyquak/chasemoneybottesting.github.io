@@ -1,0 +1,23 @@
+/* This file is the entry point for CSS.
+It loads the core Tailwind directives and sets up the base layout
+for your React application.
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ensure the root containers (body and #root) fill the viewport height (100vh).
+This prevents layout issues on mobile devices and ensures the background
+color covers the entire screen, which is essential for a Mini App.
+*/
+body {
+    margin: 0;
+    min-height: 100vh;
+    /* Using a clean default font */
+    font-family: 'Inter', sans-serif;
+}
+
+#root {
+    min-height: 100vh;
+}
